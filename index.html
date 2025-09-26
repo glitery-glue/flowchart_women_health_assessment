@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liver Health Assessment - 3 Cases Flowchart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: auto;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 100%;
+            min-width: 1300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .flowchart {
+            position: relative;
+            width: 100%;
+            height: 600px;
+        }
+
+        .node {
+            position: absolute;
+            border-radius: 12px;
+            padding: 10px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            line-height: 1.1;
+        }
+
+        .node:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Case Labels */
+        .case-label {
+            position: absolute;
+            left: 5px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .case1-label { top: 50px; }
+        .case2-label { top: 200px; }
+        .case3-label { top: 350px; }
+
+        /* Column 1: Input Types */
+        .input1 {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            width: 120px;
+            height: 60px;
+            top: 50px;
+            left: 100px;
+        }
+
+        .input2 {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            width: 120px;
+            height: 80px;
+            top: 200px;
+            left: 100px;
+        }
+
+        .input3 {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            width: 120px;
+            height: 80px;
+            top: 350px;
+            left: 100px;
+        }
+
+        /* Column 2: Data Types */
+        .data1 {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            width: 150px;
+            height: 80px;
+            top: 40px;
+            left: 250px;
+        }
+
+        .data2 {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            width: 150px;
+            height: 80px;
+            top: 200px;
+            left: 250px;
+        }
+
+        .data3 {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            width: 150px;
+            height: 80px;
+            top: 350px;
+            left: 250px;
+        }
+
+        /* Column 3: Assessment Methods */
+        .assessment1 {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+            width: 160px;
+            height: 80px;
+            top: 40px;
+            left: 430px;
+        }
+
+        .assessment2 {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            width: 200px;
+            height: 80px;
+            top: 200px;
+            left: 410px;
+        }
+
+        .assessment3 {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            width: 200px;
+            height: 80px;
+            top: 350px;
+            left: 410px;
+        }
+
+        /* Column 4: Processing/Models */
+        .tabnet-cap {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            width: 140px;
+            height: 70px;
+            top: 320px;
+            left: 640px;
+        }
+
+        .tabnet-stiffness {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            width: 140px;
+            height: 70px;
+            top: 410px;
+            left: 640px;
+        }
+
+        /* Column 5: Results */
+        .result1 {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            color: #333;
+            width: 180px;
+            height: 100px;
+            top: 30px;
+            left: 620px;
+        }
+
+        .result2 {
+            background: linear-gradient(135deg, #fab1a0, #e17055);
+            color: #333;
+            width: 180px;
+            height: 80px;
+            top: 200px;
+            left: 640px;
+        }
+
+        .result3a {
+            background: linear-gradient(135deg, #55a3ff, #003d82);
+            width: 140px;
+            height: 70px;
+            top: 320px;
+            left: 810px;
+        }
+
+        .result3b {
+            background: linear-gradient(135deg, #ff9ff3, #f368e0);
+            width: 140px;
+            height: 70px;
+            top: 410px;
+            left: 810px;
+        }
+
+        /* Arrows */
+        .arrow {
+            position: absolute;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Case 1 Arrows */
+        .arrow1-1 { top: 75px; left: 225px; } /* Input1 → Data1 */
+        .arrow1-2 { top: 75px; left: 405px; } /* Data1 → Assessment1 */
+        .arrow1-3 { top: 75px; left: 595px; } /* Assessment1 → Result1 */
+
+        /* Case 2 Arrows */
+        .arrow2-1 { top: 235px; left: 225px; } /* Input2 → Data2 */
+        .arrow2-2 { top: 235px; left: 405px; } /* Data2 → Assessment2 */
+        .arrow2-3 { top: 235px; left: 615px; } /* Assessment2 → Result2 */
+
+        /* Case 3 Arrows */
+        .arrow3-1 { top: 385px; left: 225px; } /* Input3 → Data3 */
+        .arrow3-2 { top: 385px; left: 405px; } /* Data3 → Assessment3 */
+        .arrow3-3 { top: 350px; left: 615px; transform: rotate(-20deg); } /* Assessment3 → TabNet CAP */
+        .arrow3-4 { top: 420px; left: 615px; transform: rotate(20deg); } /* Assessment3 → TabNet Stiffness */
+        .arrow3-5 { top: 350px; left: 785px; } /* TabNet CAP → Result3a */
+        .arrow3-6 { top: 440px; left: 785px; } /* TabNet Stiffness → Result3b */
+
+        /* Column Headers */
+        .column-header {
+            position: absolute;
+            top: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .header1 { left: 120px; }
+        .header2 { left: 290px; }
+        .header3 { left: 480px; }
+        .header4 { left: 680px; }
+        .header5 { left: 850px; }
+
+        .very-small {
+            font-size: 0.65rem;
+            line-height: 0.9;
+        }
+
+        .small {
+            font-size: 0.7rem;
+            line-height: 1.0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1400px) {
+            .flowchart {
+                transform: scale(0.9);
+                transform-origin: top left;
+                height: 540px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .flowchart {
+                transform: scale(0.8);
+                transform-origin: top left;
+                height: 480px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🩺 Liver Health Assessment - 3 Cases Flowchart</h1>
+        <div class="flowchart">
+            
+            <!-- Column Headers -->
+            <div class="column-header header1">Input Types</div>
+            <div class="column-header header2">Data Types</div>
+            <div class="column-header header3">Assessment</div>
+            <div class="column-header header4">Results</div>
+
+            <!-- Case Labels -->
+            <div class="case-label case1-label">Case 1</div>
+            <div class="case-label case2-label">Case 2</div>
+            <div class="case-label case3-label">Case 3</div>
+
+            <!-- CASE 1: GPT Assessment -->
+            <div class="node input1 small">
+                User Input
+            </div>
+            <div class="arrow arrow1-1">→</div>
+            
+            <div class="node data1 very-small">
+                Demographics<br>
+                • Lifestyle, Family<br>
+                • Medical history<br>
+                • Liver disease symptoms
+            </div>
+            <div class="arrow arrow1-2">→</div>
+            
+            <div class="node assessment1 very-small">
+                GPT-Based Assessment<br><br>
+                GPT-based assessment<br>
+                of liver health (OpenAI)
+            </div>
+            <div class="arrow arrow1-3">→</div>
+            
+            <div class="node result1 very-small">
+                Assessment Report<br>
+                (Checkup Story):<br>
+                • Positive factors<br>
+                • Negative factors<br>
+                • Overall assessment<br>
+                • Recommendations
+            </div>
+
+            <!-- CASE 2: EHR Agent Classification -->
+            <div class="node input2 very-small">
+                User Input /<br>
+                PDF Parsing /<br>
+                FHIR Input /<br>
+                CSV
+            </div>
+            <div class="arrow arrow2-1">→</div>
+            
+            <div class="node data2 very-small">
+                Anthropometric +<br>
+                Vitals + Metabolic<br><br>
+                LFT + CBC
+            </div>
+            <div class="arrow arrow2-2">→</div>
+            
+            <div class="node assessment2 very-small">
+                EHR Agent Processing<br><br>
+                EHR agent → Derived Feature →<br>
+                TabNet classification of fatty liver
+            </div>
+            <div class="arrow arrow2-3">→</div>
+            
+            <div class="node result2 very-small">
+                HS Risk Classification:<br>
+                • Case 1: High/Low: 72%<br>
+                • Case 2: High/Low: 76%<br>
+                • Case 3: High/Low: 79%
+            </div>
+
+            <!-- CASE 3: TabNet Regression -->
+            <div class="node input3 very-small">
+                User Input /<br>
+                PDF Parsing /<br>
+                FHIR Input /<br>
+                CSV
+            </div>
+            <div class="arrow arrow3-1">→</div>
+            
+            <div class="node data3 very-small">
+                Anthropometric +<br>
+                Vitals + Metabolic<br><br>
+                LFT + CBC + CRP
+            </div>
+            <div class="arrow arrow3-2">→</div>
+            
+            <div class="node assessment3 very-small">
+                Compute derived features<br>
+                then doing two regressions:<br>
+                TabNet regression for CAP<br>
+                and TabNet regression for stiffness
+            </div>
+            <div class="arrow arrow3-3">↗</div>
+            <div class="arrow arrow3-4">↘</div>
+            
+            <div class="node tabnet-cap very-small">
+                TabNet<br>
+                Regression<br>
+                for CAP
+            </div>
+            <div class="arrow arrow3-5">→</div>
+            
+            <div class="node tabnet-stiffness very-small">
+                TabNet<br>
+                Regression<br>
+                for Stiffness
+            </div>
+            <div class="arrow arrow3-6">→</div>
+            
+            <div class="node result3a very-small">
+                CAP Value<br>
+                Staging based on<br>
+                CAP value prediction<br>
+                (RMSE ~ 4.8)
+            </div>
+            
+            <div class="node result3b very-small">
+                Stiffness →<br>
+                Fibrosis Stage
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Enhanced interactive hover effects
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+                this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.25)';
+                this.style.zIndex = '20';
+            });
+            
+            node.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+                this.style.zIndex = 'auto';
+            });
+        });
+
+        // Add click animation
+        document.querySelectorAll('.node').forEach(node => {
+            node.addEventListener('click', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'pulse 0.6s ease-in-out';
+                }, 10);
+            });
+        });
+
+        // Case highlighting on hover
+        document.querySelectorAll('.case-label').forEach(label => {
+            label.addEventListener('mouseenter', function() {
+                const caseNum = this.textContent.slice(-1);
+                document.querySelectorAll(`.input${caseNum}, .data${caseNum}, .assessment${caseNum}, .result${caseNum}a, .result${caseNum}b, .result${caseNum}`).forEach(node => {
+                    node.style.filter = 'brightness(1.2)';
+                });
+            });
+            
+            label.addEventListener('mouseleave', function() {
+                const caseNum = this.textContent.slice(-1);
+                document.querySelectorAll(`.input${caseNum}, .data${caseNum}, .assessment${caseNum}, .result${caseNum}a, .result${caseNum}b, .result${caseNum}`).forEach(node => {
+                    node.style.filter = 'brightness(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
